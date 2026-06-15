@@ -8,64 +8,30 @@ if (A_Args.Length >= 1 && A_Args[1] = "--run") {
     ExitApp
 }
 
-; Ctrl+Alt+\: fill prompt only. Press again quickly to fill and submit.
-^!sc02B::HandleGeminiHotkey()
+; Ctrl+Alt+\: fill prompt only.
+^!sc02B::SendClipboardToGemini(false)
 
-HandleGeminiHotkey() {
-    static pending := false
-    static doubleTapMs := 450
-    static lastEventTick := 0
+; Ctrl+Alt+Shift+\: fill prompt and submit.
+^!+sc02B::SendClipboardToGemini(true)
+
+SendClipboardToGemini(submitPrompt := false) {
     static running := false
-
-    if (A_TickCount - lastEventTick < 80) {
-        Log("ignored duplicate hotkey event")
-        return
-    }
-    lastEventTick := A_TickCount
 
     if running {
         Log("ignored hotkey while running")
         return
     }
 
-    if pending {
-        pending := false
-        SetTimer GeminiSingleTapTimer, 0
-        RunGeminiHotkey(true)
-        return
-    }
-
-    pending := true
-    SetTimer GeminiSingleTapTimer, -doubleTapMs
-
-    GeminiSingleTapTimer() {
-        if pending {
-            pending := false
-            RunGeminiHotkey(false)
-        }
-    }
-
-    RunGeminiHotkey(submitPrompt) {
-        if running {
-            Log("ignored timer while running")
-            return
-        }
-
-        running := true
-        try {
-            SendClipboardToGemini(submitPrompt)
-        } finally {
-            running := false
-        }
-    }
-}
-
-SendClipboardToGemini(submitPrompt := false) {
+    running := true
     try {
-        SendClipboardToGeminiImpl(submitPrompt)
-    } catch as err {
-        Log("exception: " err.Message)
-        MsgBox "Gemini 프롬프트 실행 중 오류가 발생했습니다.`n" err.Message, "Gemini 프롬프트", "Icon!"
+        try {
+            SendClipboardToGeminiImpl(submitPrompt)
+        } catch as err {
+            Log("exception: " err.Message)
+            MsgBox "Gemini 프롬프트 실행 중 오류가 발생했습니다.`n" err.Message, "Gemini 프롬프트", "Icon!"
+        }
+    } finally {
+        running := false
     }
 }
 
@@ -106,14 +72,17 @@ SendClipboardToGeminiImpl(submitPrompt := false) {
         exitCode := RunWait(command, A_ScriptDir, "Hide")
         Log("node exitCode: " exitCode)
 
-        if (exitCode != 0) {
-            Log("node failed; open profile and retry")
+        errorCode := ReadStatusErrorCode(statusFile)
+        if (exitCode != 0 && !submitPrompt && CanRetryWithVisibleProfile(errorCode)) {
+            Log("node failed; open profile and retry; errorCode=" errorCode)
             OpenGeminiBrowserProfile()
             Sleep 2500
             DeleteIfExists(statusFile)
             Log("retry node visible: " command)
             exitCode := RunWait(command, A_ScriptDir, "Hide")
             Log("retry node exitCode: " exitCode)
+        } else if (exitCode != 0) {
+            Log("node failed; no retry; submit=" (submitPrompt ? "true" : "false") "; errorCode=" errorCode)
         }
     } finally {
         DeleteIfExists(promptFile)
@@ -121,7 +90,11 @@ SendClipboardToGeminiImpl(submitPrompt := false) {
 
     if (exitCode != 0) {
         Log("node failed")
-        MsgBox "Gemini 프롬프트 입력에 실패했습니다.`n자동화가 사용하는 Chrome 프로필을 열고 재시도했지만 입력하지 못했습니다.`nGemini 로그인 상태와 입력창을 확인하세요.", "Gemini 프롬프트", "Icon!"
+        if submitPrompt {
+            MsgBox "Gemini 프롬프트 전송에 실패했습니다.`n입력창에 프롬프트가 남아 있으면 직접 전송하세요.", "Gemini 프롬프트", "Icon!"
+        } else {
+            MsgBox "Gemini 프롬프트 입력에 실패했습니다.`n자동화 Chrome 프로필의 Gemini 입력창을 확인하세요.", "Gemini 프롬프트", "Icon!"
+        }
         return
     }
 
@@ -141,6 +114,27 @@ DeleteIfExists(path) {
     if FileExist(path) {
         FileDelete path
     }
+}
+
+ReadStatusErrorCode(statusFile) {
+    if !FileExist(statusFile) {
+        return ""
+    }
+
+    try {
+        statusText := FileRead(statusFile, "UTF-8")
+        if RegExMatch(statusText, '"errorCode"\s*:\s*"([^"]+)"', &match) {
+            return match[1]
+        }
+    } catch as err {
+        Log("status read failed: " err.Message)
+    }
+
+    return ""
+}
+
+CanRetryWithVisibleProfile(errorCode) {
+    return errorCode = "BROWSER_START_FAILED" || errorCode = "GEMINI_COMPOSER_NOT_FOUND"
 }
 
 ResolveNodeExe() {

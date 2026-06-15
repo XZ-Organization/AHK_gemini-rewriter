@@ -5,15 +5,15 @@ Windows AutoHotkey v2 macro that sends clean clipboard text to a dedicated Chrom
 ## Hotkey
 
 - `Ctrl+Alt+\`: fill the Gemini prompt only.
-- `Ctrl+Alt+\` twice quickly: fill the Gemini prompt and press the send button.
+- `Ctrl+Alt+Shift+\`: fill the Gemini prompt and press the send button.
 
 ## Workflow
 
 1. Copy text to the clipboard.
-2. Press `Ctrl+Alt+\` once, or press it twice quickly to submit immediately.
+2. Press `Ctrl+Alt+\`, or press `Ctrl+Alt+Shift+\` to submit immediately.
 3. The script normalizes the clipboard to plain text.
 4. Gemini opens in the dedicated automation Chrome profile.
-5. The prompt is filled. The send button is pressed only on a quick double hotkey.
+5. The prompt is filled. The send button is pressed only on `Ctrl+Alt+Shift+\`.
 
 ## Prompt Template
 
