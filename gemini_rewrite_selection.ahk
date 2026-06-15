@@ -9,17 +9,29 @@ if (A_Args.Length >= 1 && A_Args[1] = "--run") {
 }
 
 ; Ctrl+Alt+\: fill prompt only. Press again quickly to fill and submit.
-^!vkDC::HandleGeminiHotkey()
 ^!sc02B::HandleGeminiHotkey()
 
 HandleGeminiHotkey() {
     static pending := false
     static doubleTapMs := 450
+    static lastEventTick := 0
+    static running := false
+
+    if (A_TickCount - lastEventTick < 80) {
+        Log("ignored duplicate hotkey event")
+        return
+    }
+    lastEventTick := A_TickCount
+
+    if running {
+        Log("ignored hotkey while running")
+        return
+    }
 
     if pending {
         pending := false
         SetTimer GeminiSingleTapTimer, 0
-        SendClipboardToGemini(true)
+        RunGeminiHotkey(true)
         return
     }
 
@@ -29,7 +41,21 @@ HandleGeminiHotkey() {
     GeminiSingleTapTimer() {
         if pending {
             pending := false
-            SendClipboardToGemini(false)
+            RunGeminiHotkey(false)
+        }
+    }
+
+    RunGeminiHotkey(submitPrompt) {
+        if running {
+            Log("ignored timer while running")
+            return
+        }
+
+        running := true
+        try {
+            SendClipboardToGemini(submitPrompt)
+        } finally {
+            running := false
         }
     }
 }
