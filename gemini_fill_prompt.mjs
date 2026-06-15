@@ -25,6 +25,10 @@ function argValue(name) {
   return index >= 0 ? process.argv[index + 1] : "";
 }
 
+function hasArg(name) {
+  return process.argv.includes(name);
+}
+
 function loadPlaywright() {
   const scriptDir = dirname(fileURLToPath(import.meta.url));
   const candidates = [
@@ -299,6 +303,77 @@ async function setPromptInPage(page, promptText, timeoutMs) {
   throw new Error(`Prompt fill verification failed; diagnostics=${JSON.stringify(lastResult)}`);
 }
 
+async function clickSendButton(page, promptText, timeoutMs) {
+  const deadline = Date.now() + timeoutMs;
+  let lastResult = null;
+
+  while (Date.now() < deadline) {
+    lastResult = await page.evaluate((text) => {
+      const composerCandidates = Array.from(document.querySelectorAll("textarea,[contenteditable='true'],[role='textbox']"))
+        .filter((element) => (element.value || element.innerText || element.textContent || "").includes(text));
+      const composer = composerCandidates
+        .sort((a, b) => b.getBoundingClientRect().bottom - a.getBoundingClientRect().bottom)[0];
+
+      if (!composer) {
+        return { ok: false, reason: "composer_not_found" };
+      }
+
+      const composerRect = composer.getBoundingClientRect();
+      const buttons = Array.from(document.querySelectorAll("button"))
+        .filter((button) => {
+          const rect = button.getBoundingClientRect();
+          const style = window.getComputedStyle(button);
+          const label = [
+            button.getAttribute("aria-label") || "",
+            button.getAttribute("data-test-id") || "",
+            button.title || "",
+            button.innerText || "",
+            button.textContent || "",
+          ].join(" ");
+
+          return rect.width > 0
+            && rect.height > 0
+            && style.visibility !== "hidden"
+            && style.display !== "none"
+            && !button.disabled
+            && rect.bottom >= composerRect.top - 80
+            && rect.top <= composerRect.bottom + 180
+            && /send|submit|전송|보내기|메시지 보내기/i.test(label);
+        })
+        .sort((a, b) => {
+          const aRect = a.getBoundingClientRect();
+          const bRect = b.getBoundingClientRect();
+          return Math.abs(aRect.top - composerRect.top) - Math.abs(bRect.top - composerRect.top);
+        });
+
+      const button = buttons[0];
+      if (!button) {
+        return { ok: false, reason: "send_button_not_found" };
+      }
+
+      const label = button.getAttribute("aria-label") || button.title || button.innerText || button.textContent || "";
+      button.click();
+      return { ok: true, label };
+    }, promptText);
+
+    if (lastResult.ok) {
+      await page.waitForTimeout(700);
+      const stillHasPrompt = await page.evaluate((text) => {
+        return Array.from(document.querySelectorAll("textarea,[contenteditable='true'],[role='textbox']"))
+          .some((element) => (element.value || element.innerText || element.textContent || "").includes(text));
+      }, promptText).catch(() => false);
+
+      if (!stillHasPrompt) {
+        return lastResult;
+      }
+    }
+
+    await page.waitForTimeout(300);
+  }
+
+  throw new Error(`Gemini send button click failed; diagnostics=${JSON.stringify(lastResult)}`);
+}
+
 async function waitForGeminiComposerReady(page, timeoutMs) {
   const deadline = Date.now() + timeoutMs;
   let lastResult = null;
@@ -374,6 +449,7 @@ async function main() {
   if (!promptText.trim()) {
     throw new Error("Prompt file is empty");
   }
+  const submitPrompt = hasArg("--submit");
 
   const { chromium } = loadPlaywright();
   const visibleProfileDir = preferredChromeProfileDir();
@@ -392,6 +468,9 @@ async function main() {
     await waitForGeminiComposerReady(page, 45000);
 
     const fillResult = await setPromptInPage(page, promptText, 30000);
+    const sendResult = submitPrompt
+      ? await clickSendButton(page, promptText, 10000)
+      : null;
 
     writeStatus(statusFile, {
       ok: true,
@@ -403,7 +482,8 @@ async function main() {
       selector: fillResult.selector,
       placeholder: fillResult.placeholder,
       filled: true,
-      submitted: false,
+      submitted: submitPrompt,
+      send: sendResult,
       reusedTab: reused,
     });
   } finally {
@@ -440,6 +520,11 @@ function classifyError(error) {
   if (/Prompt fill verification failed|Gemini composer not ready/i.test(message)) {
     return {
       errorCode: "GEMINI_COMPOSER_NOT_FOUND",
+    };
+  }
+  if (/Gemini send button click failed/i.test(message)) {
+    return {
+      errorCode: "GEMINI_SEND_FAILED",
     };
   }
   return {

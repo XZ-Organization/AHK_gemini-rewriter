@@ -4,25 +4,47 @@ SendMode "Input"
 SetTitleMatchMode 2
 
 if (A_Args.Length >= 1 && A_Args[1] = "--run") {
-    SendClipboardToGemini()
+    SendClipboardToGemini(false)
     ExitApp
 }
 
-; Ctrl+Alt+\: clipboard plain text -> visible Chrome Gemini prompt.
-^!vkDC::SendClipboardToGemini()
-^!sc02B::SendClipboardToGemini()
+; Ctrl+Alt+\: fill prompt only. Press again quickly to fill and submit.
+^!vkDC::HandleGeminiHotkey()
+^!sc02B::HandleGeminiHotkey()
 
-SendClipboardToGemini() {
+HandleGeminiHotkey() {
+    static pending := false
+    static doubleTapMs := 450
+
+    if pending {
+        pending := false
+        SetTimer GeminiSingleTapTimer, 0
+        SendClipboardToGemini(true)
+        return
+    }
+
+    pending := true
+    SetTimer GeminiSingleTapTimer, -doubleTapMs
+
+    GeminiSingleTapTimer() {
+        if pending {
+            pending := false
+            SendClipboardToGemini(false)
+        }
+    }
+}
+
+SendClipboardToGemini(submitPrompt := false) {
     try {
-        SendClipboardToGeminiImpl()
+        SendClipboardToGeminiImpl(submitPrompt)
     } catch as err {
         Log("exception: " err.Message)
         MsgBox "Gemini 프롬프트 실행 중 오류가 발생했습니다.`n" err.Message, "Gemini 프롬프트", "Icon!"
     }
 }
 
-SendClipboardToGeminiImpl() {
-    Log("started")
+SendClipboardToGeminiImpl(submitPrompt := false) {
+    Log("started submit=" (submitPrompt ? "true" : "false"))
 
     draftText := GetClipboardPlainText()
     if (draftText = "") {
@@ -52,7 +74,7 @@ SendClipboardToGeminiImpl() {
     DeleteIfExists(statusFile)
     FileAppend prompt, promptFile, "UTF-8"
 
-    command := Format('"{1}" "{2}" --prompt-file "{3}" --status-file "{4}"', nodeExe, nodeScript, promptFile, statusFile)
+    command := Format('"{1}" "{2}" --prompt-file "{3}" --status-file "{4}"{5}', nodeExe, nodeScript, promptFile, statusFile, submitPrompt ? " --submit" : "")
     Log("run node visible: " command)
     try {
         exitCode := RunWait(command, A_ScriptDir, "Hide")
