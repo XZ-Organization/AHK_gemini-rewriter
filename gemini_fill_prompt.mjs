@@ -309,8 +309,24 @@ async function clickSendButton(page, promptText, timeoutMs) {
 
   while (Date.now() < deadline) {
     lastResult = await page.evaluate((text) => {
+      const marker = "###초안";
+      const textOf = (element) => element.value || element.innerText || element.textContent || "";
+      const isVisible = (element) => {
+        const rect = element.getBoundingClientRect();
+        const style = window.getComputedStyle(element);
+        return rect.width > 0
+          && rect.height > 0
+          && style.visibility !== "hidden"
+          && style.display !== "none"
+          && !element.closest("[aria-hidden='true']");
+      };
+
       const composerCandidates = Array.from(document.querySelectorAll("textarea,[contenteditable='true'],[role='textbox']"))
-        .filter((element) => (element.value || element.innerText || element.textContent || "").includes(text));
+        .filter((element) => isVisible(element))
+        .filter((element) => {
+          const content = textOf(element);
+          return content.includes(marker) || content.includes(text);
+        });
       const composer = composerCandidates
         .sort((a, b) => b.getBoundingClientRect().bottom - a.getBoundingClientRect().bottom)[0];
 
@@ -329,6 +345,7 @@ async function clickSendButton(page, promptText, timeoutMs) {
             button.title || "",
             button.innerText || "",
             button.textContent || "",
+            button.className || "",
           ].join(" ");
 
           return rect.width > 0
@@ -338,12 +355,28 @@ async function clickSendButton(page, promptText, timeoutMs) {
             && !button.disabled
             && rect.bottom >= composerRect.top - 80
             && rect.top <= composerRect.bottom + 180
-            && /send|submit|전송|보내기|메시지 보내기/i.test(label);
+            && /send|submit|전송|보내기|메시지 보내기|제출|submit-button|send-button/i.test(label);
         })
         .sort((a, b) => {
           const aRect = a.getBoundingClientRect();
           const bRect = b.getBoundingClientRect();
-          return Math.abs(aRect.top - composerRect.top) - Math.abs(bRect.top - composerRect.top);
+          const score = (button, rect) => {
+            const label = [
+              button.getAttribute("aria-label") || "",
+              button.getAttribute("data-test-id") || "",
+              button.title || "",
+              button.innerText || "",
+              button.textContent || "",
+              button.className || "",
+            ].join(" ");
+            let value = 0;
+            if (/send|submit|전송|보내기|메시지 보내기|제출/i.test(label)) value -= 100;
+            if (/submit-button|send-button/i.test(label)) value -= 50;
+            value += Math.abs(rect.top - composerRect.top);
+            value += Math.max(0, composerRect.right - rect.right) / 20;
+            return value;
+          };
+          return score(a, aRect) - score(b, bRect);
         });
 
       const button = buttons[0];
@@ -357,13 +390,8 @@ async function clickSendButton(page, promptText, timeoutMs) {
     }, promptText);
 
     if (lastResult.ok) {
-      await page.waitForTimeout(700);
-      const stillHasPrompt = await page.evaluate((text) => {
-        return Array.from(document.querySelectorAll("textarea,[contenteditable='true'],[role='textbox']"))
-          .some((element) => (element.value || element.innerText || element.textContent || "").includes(text));
-      }, promptText).catch(() => false);
-
-      if (!stillHasPrompt) {
+      const cleared = await waitForComposerToClear(page, promptText, 5000);
+      if (cleared) {
         return lastResult;
       }
     }
@@ -372,6 +400,29 @@ async function clickSendButton(page, promptText, timeoutMs) {
   }
 
   throw new Error(`Gemini send button click failed; diagnostics=${JSON.stringify(lastResult)}`);
+}
+
+async function waitForComposerToClear(page, promptText, timeoutMs) {
+  const deadline = Date.now() + timeoutMs;
+  while (Date.now() < deadline) {
+    const stillHasPrompt = await page.evaluate((text) => {
+      const marker = "###초안";
+      const textOf = (element) => element.value || element.innerText || element.textContent || "";
+      return Array.from(document.querySelectorAll("textarea,[contenteditable='true'],[role='textbox']"))
+        .some((element) => {
+          const content = textOf(element);
+          return content.includes(marker) || content.includes(text);
+        });
+    }, promptText).catch(() => false);
+
+    if (!stillHasPrompt) {
+      return true;
+    }
+
+    await page.waitForTimeout(250);
+  }
+
+  return false;
 }
 
 async function waitForGeminiComposerReady(page, timeoutMs) {
@@ -507,27 +558,33 @@ main().then(() => {
 
 function classifyError(error) {
   const message = String(error?.message || error || "");
+  const debug = process.env.GEMINI_PROMPT_DEBUG === "1" ? { debug: message.slice(0, 4000) } : {};
   if (/Chrome\/Edge executable not found|Could not start a CDP browser/i.test(message)) {
     return {
       errorCode: "BROWSER_START_FAILED",
+      ...debug,
     };
   }
   if (/Playwright dependency not found/i.test(message)) {
     return {
       errorCode: "PLAYWRIGHT_NOT_FOUND",
+      ...debug,
     };
   }
   if (/Prompt fill verification failed|Gemini composer not ready/i.test(message)) {
     return {
       errorCode: "GEMINI_COMPOSER_NOT_FOUND",
+      ...debug,
     };
   }
   if (/Gemini send button click failed/i.test(message)) {
     return {
       errorCode: "GEMINI_SEND_FAILED",
+      ...debug,
     };
   }
   return {
     errorCode: "GEMINI_AUTOMATION_FAILED",
+    ...debug,
   };
 }
