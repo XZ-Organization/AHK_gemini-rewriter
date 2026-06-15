@@ -1,0 +1,7 @@
+node_modules/
+review_excluded/
+*.log
+*.tmp
+*.zip
+.env
+.env.*
