@@ -14,6 +14,34 @@ if (A_Args.Length >= 1 && A_Args[1] = "--run") {
 ; Ctrl+Alt+Shift+\: fill prompt and submit.
 ^!+sc02B::SendClipboardToGemini(true)
 
+; Ctrl+Alt+]: paste prompt-writing exclusion guidance.
+^!sc01B::PastePromptExclusionGuidance()
+
+PastePromptExclusionGuidance() {
+    text := "한편, 프롬프트 작성 시 아래 내용은 포함하지마.`n- 중복`n- 불필요한 내용`n- 특정 맥락에 불필요하거나 지나치게 집착하게 만드는 내용`n- 별도 지시가 없어도 자율적으로 수행할 내용"
+    PasteTextPreservingClipboard(text)
+}
+
+PasteTextPreservingClipboard(text) {
+    clipSaved := ClipboardAll()
+    try {
+        A_Clipboard := text
+        if !ClipWait(1) {
+            MsgBox "붙여넣을 문구를 클립보드에 등록하지 못했습니다.", "단축키 모음", "Icon!"
+            return
+        }
+
+        KeyWait "LControl"
+        KeyWait "RControl"
+        KeyWait "LAlt"
+        KeyWait "RAlt"
+        Send "^v"
+        Sleep 200
+    } finally {
+        A_Clipboard := clipSaved
+    }
+}
+
 SendClipboardToGemini(submitPrompt := false) {
     static running := false
 
