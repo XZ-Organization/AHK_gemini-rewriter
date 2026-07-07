@@ -6,6 +6,7 @@ Windows AutoHotkey v2 hotkey collection for Gemini prompt drafting and prompt-wr
 
 - `Ctrl+Alt+\`: fill the Gemini prompt only.
 - `Ctrl+Alt+Shift+\`: fill the Gemini prompt and press the send button.
+- `Ctrl+Alt+[`: paste parent-thread prompt guidance into the active input field.
 - `Ctrl+Alt+]`: paste prompt-writing exclusion guidance into the active input field.
 
 ## Gemini Workflow
@@ -19,10 +20,21 @@ Windows AutoHotkey v2 hotkey collection for Gemini prompt drafting and prompt-wr
 ## Snippet Workflow
 
 1. Focus any text input field.
-2. Press `Ctrl+Alt+]`.
+2. Press `Ctrl+Alt+[` or `Ctrl+Alt+]`.
 3. The script temporarily registers the snippet to the clipboard, sends `Ctrl+V`, then restores the previous clipboard.
 
-Snippet:
+`Ctrl+Alt+[` snippet:
+
+```text
+정리된 내용으로 진행되도록 부모 스레드에 송부할 프롬프트 만들어줘.
+한편, 아래 내용은 포함하지마.
+- 중복
+- 불필요한 내용
+- 특정 맥락에 불필요하거나 지나치게 집착하게 만드는 내용
+- 별도 지시가 없어도 자율적으로 수행할 내용
+```
+
+`Ctrl+Alt+]` snippet:
 
 ```text
 한편, 프롬프트 작성 시 아래 내용은 포함하지마.

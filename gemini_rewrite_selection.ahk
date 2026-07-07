@@ -17,8 +17,16 @@ if (A_Args.Length >= 1 && A_Args[1] = "--run") {
 ; Ctrl+Alt+]: paste prompt-writing exclusion guidance.
 ^!sc01B::PastePromptExclusionGuidance()
 
+; Ctrl+Alt+[: paste parent-thread prompt guidance.
+^!sc01A::PasteParentThreadPromptGuidance()
+
 PastePromptExclusionGuidance() {
     text := "한편, 프롬프트 작성 시 아래 내용은 포함하지마.`n- 중복`n- 불필요한 내용`n- 특정 맥락에 불필요하거나 지나치게 집착하게 만드는 내용`n- 별도 지시가 없어도 자율적으로 수행할 내용"
+    PasteTextPreservingClipboard(text)
+}
+
+PasteParentThreadPromptGuidance() {
+    text := "정리된 내용으로 진행되도록 부모 스레드에 송부할 프롬프트 만들어줘.`n한편, 아래 내용은 포함하지마.`n- 중복`n- 불필요한 내용`n- 특정 맥락에 불필요하거나 지나치게 집착하게 만드는 내용`n- 별도 지시가 없어도 자율적으로 수행할 내용"
     PasteTextPreservingClipboard(text)
 }
 
