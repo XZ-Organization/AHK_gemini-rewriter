@@ -21,7 +21,7 @@ if (A_Args.Length >= 1 && A_Args[1] = "--run") {
 ^!sc01A::PasteParentThreadPromptGuidance()
 
 PastePromptExclusionGuidance() {
-    text := "한편, 프롬프트 작성 시 아래 내용은 포함하지마.`n- 중복내용`n- 불필요한 내용`n- 특정 맥락에 불필요하거나 지나치게 집착하게 만드는 내용`n- 별도 지시가 없어도 자율적으로 수행할 내용"
+    text := "한편, 프롬프트 작성 시 아래 내용은 포함하지마.`n- 중복 내용`n- 불필요한 내용`n- 특정 맥락에 불필요하거나 지나치게 집착하게 만드는 내용`n- 별도 지시가 없어도 자율적으로 수행할 내용"
     PasteTextPreservingClipboard(text)
 }
 
