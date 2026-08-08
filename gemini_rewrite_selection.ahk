@@ -20,6 +20,9 @@ if (A_Args.Length >= 1 && A_Args[1] = "--run") {
 ; Ctrl+Alt+[: paste parent-thread prompt guidance.
 ^!sc01A::PasteParentThreadPromptGuidance()
 
+; Ctrl+Alt+Shift+[: paste finalized side-chat takeaways guidance.
+^!+sc01A::PasteFinalizedSideChatGuidance()
+
 PastePromptExclusionGuidance() {
     text := "When writing the prompt, exclude the following:`n- Redundant or duplicate content`n- Unnecessary details`n- Information that is irrelevant to the context or leads to hyper-fixation on minor points`n- Tasks that can be performed autonomously without explicit instructions"
     PasteTextPreservingClipboard(text)
@@ -27,6 +30,11 @@ PastePromptExclusionGuidance() {
 
 PasteParentThreadPromptGuidance() {
     text := "Create a prompt to deliver to the parent thread so that work can proceed using the summary from the side chat.`n`nExclude the following from the prompt:`n- Redundant or duplicate content`n- Unnecessary details`n- Information that is irrelevant to the context or leads to hyper-fixation on minor points`n- Tasks that can be performed autonomously without explicit instructions"
+    PasteTextPreservingClipboard(text)
+}
+
+PasteFinalizedSideChatGuidance() {
+    text := "Please proceed with the main task using the key takeaways finalized in the side chat.`n`nRequirements:`n- Focus exclusively on essential updates, final decisions, and actionable next steps.`n- Exclude duplicate or redundant information.`n- Omit unnecessary background details or context that could lead to over-fixation on minor points.`n- Omit standard tasks or workflows that can be executed autonomously without explicit direction."
     PasteTextPreservingClipboard(text)
 }
 

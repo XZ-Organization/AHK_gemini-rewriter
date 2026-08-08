@@ -7,6 +7,7 @@ Windows AutoHotkey v2 hotkey collection for Gemini prompt drafting and prompt-wr
 - `Ctrl+Alt+\`: fill the Gemini prompt only.
 - `Ctrl+Alt+Shift+\`: fill the Gemini prompt and press the send button.
 - `Ctrl+Alt+[`: paste parent-thread prompt guidance into the active input field.
+- `Ctrl+Alt+Shift+[`: paste finalized side-chat takeaways guidance into the active input field.
 - `Ctrl+Alt+]`: paste prompt-writing exclusion guidance into the active input field.
 
 ## Gemini Workflow
@@ -20,7 +21,7 @@ Windows AutoHotkey v2 hotkey collection for Gemini prompt drafting and prompt-wr
 ## Snippet Workflow
 
 1. Focus any text input field.
-2. Press `Ctrl+Alt+[` or `Ctrl+Alt+]`.
+2. Press `Ctrl+Alt+[`, `Ctrl+Alt+Shift+[`, or `Ctrl+Alt+]`.
 3. The script temporarily registers the snippet to the clipboard, sends `Ctrl+V`, then restores the previous clipboard.
 
 `Ctrl+Alt+[` snippet:
@@ -43,6 +44,18 @@ When writing the prompt, exclude the following:
 - Unnecessary details
 - Information that is irrelevant to the context or leads to hyper-fixation on minor points
 - Tasks that can be performed autonomously without explicit instructions
+```
+
+`Ctrl+Alt+Shift+[` snippet:
+
+```text
+Please proceed with the main task using the key takeaways finalized in the side chat.
+
+Requirements:
+- Focus exclusively on essential updates, final decisions, and actionable next steps.
+- Exclude duplicate or redundant information.
+- Omit unnecessary background details or context that could lead to over-fixation on minor points.
+- Omit standard tasks or workflows that can be executed autonomously without explicit direction.
 ```
 
 ## Prompt Template
