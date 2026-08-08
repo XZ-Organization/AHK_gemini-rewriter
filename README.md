@@ -26,22 +26,23 @@ Windows AutoHotkey v2 hotkey collection for Gemini prompt drafting and prompt-wr
 `Ctrl+Alt+[` snippet:
 
 ```text
-사이드 채팅에서 정리된 내용으로 진행되도록 부모 스레드에 송부할 프롬프트 만들어줘.
-한편, 아래 내용은 포함하지마.
-- 중복 내용
-- 불필요한 내용
-- 특정 맥락에 불필요하거나 지나치게 집착하게 만드는 내용
-- 별도 지시가 없어도 자율적으로 수행할 내용
+Create a prompt to deliver to the parent thread so that work can proceed using the summary from the side chat.
+
+Exclude the following from the prompt:
+- Redundant or duplicate content
+- Unnecessary details
+- Information that is irrelevant to the context or leads to hyper-fixation on minor points
+- Tasks that can be performed autonomously without explicit instructions
 ```
 
 `Ctrl+Alt+]` snippet:
 
 ```text
-한편, 프롬프트 작성 시 아래 내용은 포함하지마.
-- 중복 내용
-- 불필요한 내용
-- 특정 맥락에 불필요하거나 지나치게 집착하게 만드는 내용
-- 별도 지시가 없어도 자율적으로 수행할 내용
+When writing the prompt, exclude the following:
+- Redundant or duplicate content
+- Unnecessary details
+- Information that is irrelevant to the context or leads to hyper-fixation on minor points
+- Tasks that can be performed autonomously without explicit instructions
 ```
 
 ## Prompt Template
