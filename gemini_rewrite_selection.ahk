@@ -23,6 +23,9 @@ if (A_Args.Length >= 1 && A_Args[1] = "--run") {
 ; Ctrl+Alt+Shift+[: paste finalized side-chat takeaways guidance.
 ^!+sc01A::PasteFinalizedSideChatGuidance()
 
+; Ctrl+Alt+': paste broad diagnosis and boundary verification guidance.
+^!sc028::PasteBoundaryGuidance()
+
 PastePromptExclusionGuidance() {
     text := "When writing the prompt, exclude the following:`n- Redundant or duplicate content`n- Unnecessary details`n- Information that is irrelevant to the context or leads to hyper-fixation on minor points`n- Tasks that can be performed autonomously without explicit instructions"
     PasteTextPreservingClipboard(text)
@@ -35,6 +38,11 @@ PasteParentThreadPromptGuidance() {
 
 PasteFinalizedSideChatGuidance() {
     text := "Please proceed with the main task using the key takeaways finalized in the side chat.`n`nRequirements:`n- Focus exclusively on essential updates, final decisions, and actionable next steps.`n- Exclude duplicate or redundant information.`n- Omit unnecessary background details or context that could lead to over-fixation on minor points.`n- Omit standard tasks or workflows that can be executed autonomously without explicit direction."
+    PasteTextPreservingClipboard(text)
+}
+
+PasteBoundaryGuidance() {
+    text := "Diagnose broadly.`nModify within the owning boundary.`nVerify across affected boundaries."
     PasteTextPreservingClipboard(text)
 }
 

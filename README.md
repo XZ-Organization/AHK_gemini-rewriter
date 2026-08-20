@@ -9,6 +9,7 @@ Windows AutoHotkey v2 hotkey collection for Gemini prompt drafting and prompt-wr
 - `Ctrl+Alt+[`: paste parent-thread prompt guidance into the active input field.
 - `Ctrl+Alt+Shift+[`: paste finalized side-chat takeaways guidance into the active input field.
 - `Ctrl+Alt+]`: paste prompt-writing exclusion guidance into the active input field.
+- `Ctrl+Alt+'`: paste broad diagnosis and boundary verification guidance into the active input field.
 
 ## Gemini Workflow
 
@@ -21,7 +22,7 @@ Windows AutoHotkey v2 hotkey collection for Gemini prompt drafting and prompt-wr
 ## Snippet Workflow
 
 1. Focus any text input field.
-2. Press `Ctrl+Alt+[`, `Ctrl+Alt+Shift+[`, or `Ctrl+Alt+]`.
+2. Press `Ctrl+Alt+[`, `Ctrl+Alt+Shift+[`, `Ctrl+Alt+]`, or `Ctrl+Alt+'`.
 3. The script temporarily registers the snippet to the clipboard, sends `Ctrl+V`, then restores the previous clipboard.
 
 `Ctrl+Alt+[` snippet:
@@ -56,6 +57,14 @@ Requirements:
 - Exclude duplicate or redundant information.
 - Omit unnecessary background details or context that could lead to over-fixation on minor points.
 - Omit standard tasks or workflows that can be executed autonomously without explicit direction.
+```
+
+`Ctrl+Alt+'` snippet:
+
+```text
+Diagnose broadly.
+Modify within the owning boundary.
+Verify across affected boundaries.
 ```
 
 ## Prompt Template
