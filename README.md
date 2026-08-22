@@ -10,6 +10,7 @@ Windows AutoHotkey v2 hotkey collection for Gemini prompt drafting and prompt-wr
 - `Ctrl+Alt+Shift+[`: paste finalized side-chat takeaways guidance into the active input field.
 - `Ctrl+Alt+]`: paste prompt-writing exclusion guidance into the active input field.
 - `Ctrl+Alt+'`: paste broad diagnosis and boundary verification guidance into the active input field.
+- `Ctrl+Alt+Shift+/`: paste the production/release implementation review prompt into the active input field.
 
 ## Gemini Workflow
 
@@ -22,7 +23,7 @@ Windows AutoHotkey v2 hotkey collection for Gemini prompt drafting and prompt-wr
 ## Snippet Workflow
 
 1. Focus any text input field.
-2. Press `Ctrl+Alt+[`, `Ctrl+Alt+Shift+[`, `Ctrl+Alt+]`, or `Ctrl+Alt+'`.
+2. Press `Ctrl+Alt+[`, `Ctrl+Alt+Shift+[`, `Ctrl+Alt+]`, `Ctrl+Alt+'`, or `Ctrl+Alt+Shift+/`.
 3. The script temporarily registers the snippet to the clipboard, sends `Ctrl+V`, then restores the previous clipboard.
 
 `Ctrl+Alt+[` snippet:
@@ -65,6 +66,33 @@ Requirements:
 Diagnose broadly.
 Modify within the owning boundary.
 Verify across affected boundaries.
+```
+
+`Ctrl+Alt+Shift+/` snippet:
+
+```text
+현재 코드와 실제 production/release 경로를 기준으로 {{Codebase}} 구현 수준을 독립적으로 검토하세요.
+
+**Diagnose broadly. Modify within the owning boundary. Verify across affected boundaries.**
+
+## 작업
+
+1. 기존 `main` 브랜치와 메인 worktree는 변경하지 말고, 기준 커밋에서 별도 브랜치와 격리된 worktree를 생성하세요.
+2. 모듈 경계, 의존성 방향, composition root, public contract 및 production/release 진입점이 실제로 일관되게 적용되어 있는지 검토하세요.
+3. 운영 중단, 데이터 무결성 훼손, 보안 경계 우회 또는 복구 불가능한 상태를 초래할 수 있는 P0 후보를 식별하고 우선순위를 정하세요.
+4. 실제 P0가 확인되면 최우선 후보 1건만 소유 경계 내에서 수정하고 회귀 테스트를 추가하세요. P0가 없으면 P1을 임의로 승격하지 말고 `P0 없음`으로 판정하세요.
+5. 테스트와 실행은 격리된 자원을 사용하며, 운영 데이터·공유 서비스·worktree 외부 산출물을 변경하지 마세요.
+
+## 완료 보고
+
+- 기준 커밋, 작업 브랜치 및 격리 worktree 경로
+- 구현 수준 판정
+- P0 후보와 최종 선정 근거
+- 근본 원인, 수정 경계 및 변경 커밋
+- 수정 전후 재현·테스트 결과
+- production/release 경로 검증 결과
+- 기존 `main`과 메인 worktree가 변경되지 않았다는 확인
+- 잔여 위험
 ```
 
 ## Prompt Template
