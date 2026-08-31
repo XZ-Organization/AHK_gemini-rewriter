@@ -11,6 +11,7 @@ Windows AutoHotkey v2 hotkey collection for Gemini prompt drafting and prompt-wr
 - `Ctrl+Alt+]`: paste prompt-writing exclusion guidance into the active input field.
 - `Ctrl+Alt+'`: paste broad diagnosis and boundary verification guidance into the active input field.
 - `Ctrl+Alt+Shift+/`: paste the production/release implementation review prompt into the active input field.
+- `Ctrl+Alt+/`: paste the staged review-and-modify procedure into the active input field.
 
 ## Gemini Workflow
 
@@ -23,7 +24,7 @@ Windows AutoHotkey v2 hotkey collection for Gemini prompt drafting and prompt-wr
 ## Snippet Workflow
 
 1. Focus any text input field.
-2. Press `Ctrl+Alt+[`, `Ctrl+Alt+Shift+[`, `Ctrl+Alt+]`, `Ctrl+Alt+'`, or `Ctrl+Alt+Shift+/`.
+2. Press `Ctrl+Alt+[`, `Ctrl+Alt+Shift+[`, `Ctrl+Alt+]`, `Ctrl+Alt+'`, `Ctrl+Alt+Shift+/`, or `Ctrl+Alt+/`.
 3. The script temporarily registers the snippet to the clipboard, sends `Ctrl+V`, then restores the previous clipboard.
 
 `Ctrl+Alt+[` snippet:
@@ -93,6 +94,17 @@ Verify across affected boundaries.
 - production/release 경로 검증 결과
 - 기존 `main`과 메인 worktree가 변경되지 않았다는 확인
 - 잔여 위험
+```
+
+`Ctrl+Alt+/` snippet:
+
+```text
+아래 순서로 [검토-수정]을 단계별로 적용해줘.
+
+1. stale 점검
+2. 사고 실험에 따라 각 경로가 정상인지 점검
+3. [$impl-validator](C:\Users\jaekw\.codex\skills\impl-validator\SKILL.md)
+4. [$imply-2-validator](C:\Users\jaekw\.codex\skills\imply-2-validator\SKILL.md)
 ```
 
 ## Prompt Template
