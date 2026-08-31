@@ -64,9 +64,7 @@ Requirements:
 `Ctrl+Alt+'` snippet:
 
 ```text
-Diagnose broadly.
-Modify within the owning boundary.
-Verify across affected boundaries.
+Diagnose broadly. Modify within the owning boundary. Verify across affected boundaries.
 ```
 
 `Ctrl+Alt+Shift+/` snippet:

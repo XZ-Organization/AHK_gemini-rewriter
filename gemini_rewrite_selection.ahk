@@ -48,7 +48,7 @@ PasteFinalizedSideChatGuidance() {
 }
 
 PasteBoundaryGuidance() {
-    text := "Diagnose broadly.`r`nModify within the owning boundary.`r`nVerify across affected boundaries."
+    text := "Diagnose broadly. Modify within the owning boundary. Verify across affected boundaries."
     PasteTextPreservingClipboard(text)
 }
 
