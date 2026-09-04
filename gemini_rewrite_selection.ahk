@@ -58,7 +58,7 @@ PasteProductionReviewPrompt() {
 }
 
 PasteReviewModifyProcedure() {
-    text := "아래 순서로 [검토-수정]을 단계별로 적용해줘.`n`n1. stale 점검`n2. 사고 실험에 따라 각 경로가 정상인지 점검`n3. [$impl-validator](C:\Users\jaekw\.codex\skills\impl-validator\SKILL.md)`n4. [$imply-2-validator](C:\Users\jaekw\.codex\skills\imply-2-validator\SKILL.md)"
+    text := "아래 순서로 진행해줘.`n`n1. [$stale-code-auditor](C:\Users\jaekw\.codex\skills\stale-code-auditor\SKILL.md) 점검 및 안전한 stale 정리`n2. 사고 실험에 따라 각 경로가 정상인지 점검 후 수정`n3. [$impl-validator](C:\Users\jaekw\.codex\skills\impl-validator\SKILL.md) fail 요소 수정`n4. [$imply-2-validator](C:\Users\jaekw\.codex\skills\imply-2-validator\SKILL.md)fail 요소 수정"
     PasteTextPreservingClipboard(text)
 }
 

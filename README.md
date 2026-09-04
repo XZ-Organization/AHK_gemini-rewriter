@@ -97,12 +97,12 @@ Diagnose broadly. Modify within the owning boundary. Verify across affected boun
 `Ctrl+Alt+/` snippet:
 
 ```text
-아래 순서로 [검토-수정]을 단계별로 적용해줘.
+아래 순서로 진행해줘.
 
-1. stale 점검
-2. 사고 실험에 따라 각 경로가 정상인지 점검
-3. [$impl-validator](C:\Users\jaekw\.codex\skills\impl-validator\SKILL.md)
-4. [$imply-2-validator](C:\Users\jaekw\.codex\skills\imply-2-validator\SKILL.md)
+1. [$stale-code-auditor](C:\Users\jaekw\.codex\skills\stale-code-auditor\SKILL.md) 점검 및 안전한 stale 정리
+2. 사고 실험에 따라 각 경로가 정상인지 점검 후 수정
+3. [$impl-validator](C:\Users\jaekw\.codex\skills\impl-validator\SKILL.md) fail 요소 수정
+4. [$imply-2-validator](C:\Users\jaekw\.codex\skills\imply-2-validator\SKILL.md)fail 요소 수정
 ```
 
 ## Prompt Template
