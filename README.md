@@ -32,21 +32,27 @@ Windows AutoHotkey v2 hotkey collection for Gemini prompt drafting and prompt-wr
 ```text
 Create a prompt to deliver to the parent thread so that work can proceed using the summary from the side chat.
 
-Exclude the following from the prompt:
-- Redundant or duplicate content
-- Unnecessary details
-- Information that is irrelevant to the context or leads to hyper-fixation on minor points
-- Tasks that can be performed autonomously without explicit instructions
+When writing a handoff prompt for another session:
+
+- Omit redundancy, irrelevant history, and routine steps.
+- Preserve the goal, verified state, unresolved issues, constraints, authorization scope, and success criteria.
+- Specify next actions, reference accessible evidence, and avoid unnecessary rework.
+- Keep it concise, self-contained, and actionable. Allow autonomy within existing authorization boundaries.
+
+Separately, recommend a suitable available model and reasoning effort for the next session, with a brief rationale.
 ```
 
 `Ctrl+Alt+]` snippet:
 
 ```text
-When writing the prompt, exclude the following:
-- Redundant or duplicate content
-- Unnecessary details
-- Information that is irrelevant to the context or leads to hyper-fixation on minor points
-- Tasks that can be performed autonomously without explicit instructions
+When writing a handoff prompt for another session:
+
+- Omit redundancy, irrelevant history, and routine steps.
+- Preserve the goal, verified state, unresolved issues, constraints, authorization scope, and success criteria.
+- Specify next actions, reference accessible evidence, and avoid unnecessary rework.
+- Keep it concise, self-contained, and actionable. Allow autonomy within existing authorization boundaries.
+
+Separately, recommend a suitable available model and reasoning effort for the next session, with a brief rationale.
 ```
 
 `Ctrl+Alt+Shift+[` snippet:
