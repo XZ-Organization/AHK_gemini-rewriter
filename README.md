@@ -38,6 +38,7 @@ When writing a handoff prompt for another session:
 - Preserve the goal, verified state, unresolved issues, constraints, authorization scope, and success criteria.
 - Specify next actions, reference accessible evidence, and avoid unnecessary rework.
 - Keep it concise, self-contained, and actionable. Allow autonomy within existing authorization boundaries.
+- Present the handoff prompt in a single code block.
 
 Separately, recommend a suitable available model and reasoning effort for the next session, with a brief rationale.
 ```
@@ -51,6 +52,7 @@ When writing a handoff prompt for another session:
 - Preserve the goal, verified state, unresolved issues, constraints, authorization scope, and success criteria.
 - Specify next actions, reference accessible evidence, and avoid unnecessary rework.
 - Keep it concise, self-contained, and actionable. Allow autonomy within existing authorization boundaries.
+- Present the handoff prompt in a single code block.
 
 Separately, recommend a suitable available model and reasoning effort for the next session, with a brief rationale.
 ```

@@ -33,12 +33,12 @@ if (A_Args.Length >= 1 && A_Args[1] = "--run") {
 ^!sc035::PasteReviewModifyProcedure()
 
 PastePromptExclusionGuidance() {
-    text := "When writing a handoff prompt for another session:`n- Omit redundancy, irrelevant history, and routine steps.`n- Preserve the goal, verified state, unresolved issues, constraints, authorization scope, and success criteria.`n- Specify next actions, reference accessible evidence, and avoid unnecessary rework.`n- Keep it concise, self-contained, and actionable. Allow autonomy within existing authorization boundaries.`n`nSeparately, recommend a suitable available model and reasoning effort for the next session, with a brief rationale."
+    text := "When writing a handoff prompt for another session:`n- Omit redundancy, irrelevant history, and routine steps.`n- Preserve the goal, verified state, unresolved issues, constraints, authorization scope, and success criteria.`n- Specify next actions, reference accessible evidence, and avoid unnecessary rework.`n- Keep it concise, self-contained, and actionable. Allow autonomy within existing authorization boundaries.`n- Present the handoff prompt in a single code block.`n`nSeparately, recommend a suitable available model and reasoning effort for the next session, with a brief rationale."
     PasteTextPreservingClipboard(text)
 }
 
 PasteParentThreadPromptGuidance() {
-    text := "Create a prompt to deliver to the parent thread so that work can proceed using the summary from the side chat.`n`nWhen writing a handoff prompt for another session:`n- Omit redundancy, irrelevant history, and routine steps.`n- Preserve the goal, verified state, unresolved issues, constraints, authorization scope, and success criteria.`n- Specify next actions, reference accessible evidence, and avoid unnecessary rework.`n- Keep it concise, self-contained, and actionable. Allow autonomy within existing authorization boundaries.`n`nSeparately, recommend a suitable available model and reasoning effort for the next session, with a brief rationale."
+    text := "Create a prompt to deliver to the parent thread so that work can proceed using the summary from the side chat.`n`nWhen writing a handoff prompt for another session:`n- Omit redundancy, irrelevant history, and routine steps.`n- Preserve the goal, verified state, unresolved issues, constraints, authorization scope, and success criteria.`n- Specify next actions, reference accessible evidence, and avoid unnecessary rework.`n- Keep it concise, self-contained, and actionable. Allow autonomy within existing authorization boundaries.`n- Present the handoff prompt in a single code block.`n`nSeparately, recommend a suitable available model and reasoning effort for the next session, with a brief rationale."
     PasteTextPreservingClipboard(text)
 }
 
